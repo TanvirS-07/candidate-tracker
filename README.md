@@ -14,7 +14,7 @@ cd backend
 python -m venv .venv
 .venv\Scripts\activate          # macOS/Linux: source .venv/bin/activate
 pip install -r requirements.txt
-cp .env.example .env            # then put your key in .env (optional, see below)
+cp .env.example .env            # Windows cmd: copy .env.example .env. Then put your key in .env (optional, see below)
 python seed.py                  # loads 6 sample candidates (safe to re-run)
 uvicorn app.main:app --reload   # http://127.0.0.1:8000  (API docs at /docs)
 
