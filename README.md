@@ -51,12 +51,23 @@ The model is faked in tests, so they check how this code handles inputs and outp
 
 ## Screenshots
 
+**AI summary of a normal resume**
+
+![AI summary of a normal resume](screenshots/Priyasummary.PNG)
+
+**Injection hidden in French, caught by the model**
+
+![Injection in French, caught by the model](screenshots/Nadiaflagged.PNG)
+
+**Candidate list**
+
+![Candidate list with stage badges](screenshots/Listview.PNG)
+
+More screenshots:
+
 | | |
 |---|---|
-| [Candidate list](screenshots/Listview.PNG) | Filters, stage badges, sort |
 | [Add candidate](screenshots/Addcandidate.PNG) | Form with pasted resume text |
-| [AI summary](screenshots/Priyasummary.PNG) | Summary of a normal resume |
-| [Injection flagged](screenshots/Nadiaflagged.PNG) | Instruction hidden in French, caught by the model |
 | [Garbled resume rejected](screenshots/Alexfix3.PNG) | Rejected before any model call |
 
 More, including before/after pairs for each fix, are linked from [`docs/AI_RESULTS.md`](docs/AI_RESULTS.md).
