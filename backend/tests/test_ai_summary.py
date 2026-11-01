@@ -85,6 +85,16 @@ def test_long_input_is_truncated_before_sending(fake_ai):
 
 # ---- model/service failures ----
 
+def test_overlong_flag_is_truncated_instead_of_rejecting_the_summary():
+    # Seen with the real model: a 215-char flag on an injection resume made the whole summary fail.
+    long_flag = "x" * 250
+    fake = FakeAnthropic(tool_input={**GOOD_TOOL_INPUT, "flags": [long_flag]})
+    summary = Summarizer(client=fake).summarize(GOOD_RESUME, "Engineer")
+    assert len(summary.flags[0]) == 200
+    assert summary.flags[0].endswith("…")
+    assert summary.headline == GOOD_TOOL_INPUT["headline"]
+
+
 def test_invalid_model_output_is_a_clean_502_and_keeps_previous_summary(client, make_candidate, session):
     c = make_candidate()
     assert client.post(f"/api/candidates/{c['id']}/summary").status_code == 200

@@ -10,6 +10,31 @@ from .schema import CandidateSummary
 DEFAULT_MODEL = "claude-haiku-5-5"  # short extraction task: cheapest/fastest tier is enough
 TOOL_NAME = "record_summary"
 
+# Per-item character limits, read from the schema so they can't drift out of sync with it.
+_ITEM_LIMITS = {
+    field: CandidateSummary.model_json_schema()["properties"][field]["items"]["maxLength"]
+    for field in ("key_skills", "experience_highlights", "flags")
+}
+
+
+def _truncate_long_items(tool_input: Any) -> Any:
+    """Shorten over-long strings in the list fields instead of rejecting the whole summary.
+
+    Only string length is fixed here. Anything structural (missing fields, wrong types,
+    too many items) is left as-is so model_validate still rejects it.
+    """
+    if not isinstance(tool_input, dict):
+        return tool_input
+    fixed = dict(tool_input)  # don't mutate the SDK's response object
+    for field, limit in _ITEM_LIMITS.items():
+        items = fixed.get(field)
+        if isinstance(items, list):
+            fixed[field] = [
+                item[: limit - 1].rstrip() + "…" if isinstance(item, str) and len(item) > limit else item
+                for item in items
+            ]
+    return fixed
+
 
 class SummaryError(Exception):
     """Carries the HTTP status the route should return."""
@@ -71,7 +96,7 @@ class Summarizer:
         if block is None:
             raise SummaryError(502, "The AI service returned no structured summary. Try again.")
         try:
-            summary = CandidateSummary.model_validate(block.input)
+            summary = CandidateSummary.model_validate(_truncate_long_items(block.input))
         except ValidationError:
             raise SummaryError(502, "The AI service returned an invalid summary. Try again.")
 

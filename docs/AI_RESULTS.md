@@ -32,7 +32,7 @@ The automated tests use a fake model, so they cannot show whether real summaries
 
 | Problem | Fix | Status |
 |---|---|---|
-| Over-long flags cause a 502 | Shorten over-long text instead of rejecting it; state "under 20 words" in the field description; log validation errors on the server | To do |
+| Over-long flags cause a 502 | Truncate over-long flags, highlights and skills to their schema limits instead of rejecting the summary. Headline still rejected if too long. | Done |
 | Duplicate warning flag | Add our own flag only when the regex matched and the model returned `injection_detected=false` | To do |
 | "Too short" for garbled text | Report long text with few letters as garbled | To do |
 | Prompt gaps | Define skills as "named anywhere in the resume"; limit flags to unreadable text and embedded instructions | To do |
