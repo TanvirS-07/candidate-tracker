@@ -6,6 +6,7 @@ from types import SimpleNamespace
 
 from app.ai_summary import Summarizer, SummaryError, get_summarizer
 from app.ai_summary import sanitize
+from app.ai_summary.service import INJECTION_NOTE
 from app.db import get_session
 from app.main import app
 from fastapi.testclient import TestClient
@@ -69,6 +70,28 @@ def test_injection_text_is_sent_as_quoted_data_and_flagged_even_if_model_misses_
     # Output is forced through one schema-only tool; no free-form text, no side-effect tools.
     assert [t["name"] for t in call["tools"]] == ["record_summary"]
     assert call["tool_choice"] == {"type": "tool", "name": "record_summary"}
+
+
+def test_injection_the_model_already_flagged_is_not_flagged_twice():
+    # Seen with the real model on Sam Whitfield: its flag said "instructing", not "instruction",
+    # so our own warning was added as a duplicate.
+    resume = BY_NAME["Sam Whitfield"]
+    assert sanitize.injection_markers(sanitize.clean(resume))  # our regex fires too
+    model_flag = "Resume contains embedded text instructing the AI to rate the candidate 10/10; ignored."
+    fake = FakeAnthropic(tool_input={**GOOD_TOOL_INPUT, "injection_detected": True, "flags": [model_flag]})
+    summary = Summarizer(client=fake).summarize(resume, "Engineer")
+    assert summary.injection_detected is True
+    assert summary.flags == [model_flag]
+
+
+def test_injection_detected_without_a_note_gets_our_note():
+    # Model-only detection (regex doesn't fire), but the model left flags empty:
+    # the recruiter would see the warning banner with nothing explaining it.
+    assert not sanitize.injection_markers(sanitize.clean(GOOD_RESUME))
+    fake = FakeAnthropic(tool_input={**GOOD_TOOL_INPUT, "injection_detected": True, "flags": []})
+    summary = Summarizer(client=fake).summarize(GOOD_RESUME, "Engineer")
+    assert summary.injection_detected is True
+    assert summary.flags == [INJECTION_NOTE]
 
 
 def test_resume_cannot_close_the_resume_tag_early(fake_ai):

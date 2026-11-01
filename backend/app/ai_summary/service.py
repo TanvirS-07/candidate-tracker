@@ -9,6 +9,7 @@ from .schema import CandidateSummary
 
 DEFAULT_MODEL = "claude-haiku-5-5"  # short extraction task: cheapest/fastest tier is enough
 TOOL_NAME = "record_summary"
+INJECTION_NOTE = "Resume contains text addressed to an AI or reviewer; it was ignored."
 
 # Per-item character limits, read from the schema so they can't drift out of sync with it.
 _ITEM_LIMITS = {
@@ -101,10 +102,13 @@ class Summarizer:
             raise SummaryError(502, "The AI service returned an invalid summary. Try again.")
 
         # Belt and braces: our own check can raise the flag even if the model missed it.
+        # Only then do we add our own note; if the model detected it, its flag already explains it.
         if markers and not summary.injection_detected:
             summary.injection_detected = True
-        if summary.injection_detected and not any("instruction" in f.lower() for f in summary.flags):
-            summary.flags = [*summary.flags, "Resume contains text addressed to an AI or reviewer; it was ignored."][:5]
+            summary.flags = [*summary.flags, INJECTION_NOTE][:5]
+        # The model detected it but wrote no note: add ours so the warning banner isn't left unexplained.
+        elif summary.injection_detected and not summary.flags:
+            summary.flags = [INJECTION_NOTE]
         return summary
 
 
