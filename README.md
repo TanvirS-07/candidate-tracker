@@ -29,11 +29,11 @@ The app works without an API key; only "Generate summary" needs `ANTHROPIC_API_K
 ## Tests
 
 ```bash
-cd backend && python -m pytest -q     # 20 tests, no network, no API key needed
+cd backend && python -m pytest -q     # 24 tests, no network, no API key needed
 cd frontend && npm test               # 2 tests
 ```
 
-The model is faked in tests, so they check how this code handles inputs and outputs, not how good the model's summaries are. See "What the tests do not cover" in `docs/WRITEUP.md`.
+The model is faked in tests, so they check how this code handles inputs and outputs, not how good the model's summaries are. For how real summaries behave, see [`docs/AI_RESULTS.md`](docs/AI_RESULTS.md).
 
 ## Where things are
 
@@ -47,7 +47,19 @@ The model is faked in tests, so they check how this code handles inputs and outp
 
 ## Docs
 
-`docs/WRITEUP.md` (design and AI integration), `docs/AI_USAGE_LOG.md`, `docs/LEARNING_LOG.md`, `docs/DEPLOYMENT.md`.
+`docs/WRITEUP.md` (design and AI integration), [`docs/AI_RESULTS.md`](docs/AI_RESULTS.md) (results from running the summary against the real model, and the fixes they led to), `docs/AI_USAGE_LOG.md`, `docs/LEARNING_LOG.md`, `docs/DEPLOYMENT.md`.
+
+## Screenshots
+
+| | |
+|---|---|
+| [Candidate list](screenshots/Listview.PNG) | Filters, stage badges, sort |
+| [Add candidate](screenshots/Addcandidate.PNG) | Form with pasted resume text |
+| [AI summary](screenshots/Priyasummary.PNG) | Summary of a normal resume |
+| [Injection flagged](screenshots/Nadiaflagged.PNG) | Instruction hidden in French, caught by the model |
+| [Garbled resume rejected](screenshots/Alexfix3.PNG) | Rejected before any model call |
+
+More, including before/after pairs for each fix, are linked from [`docs/AI_RESULTS.md`](docs/AI_RESULTS.md).
 
 ## Notes
 

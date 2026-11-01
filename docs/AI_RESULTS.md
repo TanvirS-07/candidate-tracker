@@ -30,13 +30,11 @@ The automated tests use a fake model, so they cannot show whether real summaries
 
 ## Fixes
 
-| Problem | Fix | Status |
-|---|---|---|
-| Over-long flags cause a 502 | Truncate over-long flags, highlights and skills to their schema limits instead of rejecting the summary. Headline still rejected if too long. | Done |
-| Duplicate warning flag | Add our own flag only when the regex matched and the model returned `injection_detected=false` | Done |
-| "Too short" for garbled text | Report long text with few letters as garbled | Done |
-| Prompt gaps | Define skills as "named anywhere in the resume"; limit flags to unreadable text and embedded instructions | To do |
-| Backend down shows "Request failed (500)" | Show "Can't reach the server" for network errors and non-JSON 5xx responses | Later |
+| Problem | Fix | Status | Screenshots |
+|---|---|---|---|
+| Over-long flags cause a 502 | Truncate over-long flags, highlights and skills to their schema limits instead of rejecting the summary. Headline still rejected if too long. | Done | [before](../screenshots/Chrisfail.PNG) / [after](../screenshots/Chrisfix1.PNG) |
+| Duplicate warning flag | Add our own flag only when the regex matched and the model returned `injection_detected=false`. If the model detected it but wrote no note, add ours so the warning banner is never unexplained. | Done | [before](../screenshots/Samflagged.PNG) / [after](../screenshots/Samfix2.PNG) |
+| "Too short" for garbled text | Report long text with few letters as garbled | Done | [before](../screenshots/Alexrejected.PNG) / [after](../screenshots/Alexfix3.PNG) |
 
 ## Limits of this check
 
