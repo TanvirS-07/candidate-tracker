@@ -36,11 +36,13 @@ def clean(text: str) -> str:
 def quality_problem(text: str) -> str | None:
     """Return a human-readable reason if the text isn't worth sending to a model, else None."""
     letters = sum(ch.isalpha() for ch in text)
+    non_space = sum(not ch.isspace() for ch in text)
+    # Garbled check first: a long block of symbols also has few letters, and calling it
+    # "too short" would mislead the recruiter. The non_space guard covers empty input.
+    if non_space and letters / non_space < 0.6:
+        return "Resume text looks garbled (mostly symbols or non-text characters)."
     if letters < MIN_LETTERS:
         return "Resume text is too short to summarise."
-    non_space = sum(not ch.isspace() for ch in text)
-    if letters / non_space < 0.6:
-        return "Resume text looks garbled (mostly symbols or non-text characters)."
     return None
 
 

@@ -39,11 +39,22 @@ def test_summary_is_generated_stored_and_returned(client, make_candidate, fake_a
 SYMBOL_HEAVY = "x" * 100 + " #!?%" * 200  # enough letters to pass the length check, but mostly symbols
 
 
-@pytest.mark.parametrize("resume", ["", "   ", "short", BY_NAME["Alex Roy"], SYMBOL_HEAVY])
-def test_unusable_text_is_rejected_without_calling_the_model(client, make_candidate, fake_ai, resume):
+@pytest.mark.parametrize(
+    "resume, reason",
+    [
+        ("", "too short"),
+        ("   ", "too short"),
+        ("short", "too short"),
+        # Seen with the seed data: garbled PDF bytes were reported as "too short".
+        (BY_NAME["Alex Roy"], "garbled"),
+        (SYMBOL_HEAVY, "garbled"),
+    ],
+)
+def test_unusable_text_is_rejected_without_calling_the_model(client, make_candidate, fake_ai, resume, reason):
     c = make_candidate(resume_text=resume)
     r = client.post(f"/api/candidates/{c['id']}/summary")
     assert r.status_code == 422
+    assert reason in r.json()["detail"]
     assert fake_ai.calls == []
 
 
