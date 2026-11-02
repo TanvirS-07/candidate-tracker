@@ -1,5 +1,9 @@
 # Candidate Tracker
 
+[![Watch the 83-second demo: what it does and how to run it](docs/demo-poster.jpg)](docs/demo.mp4)
+
+▶ **[Watch the demo](docs/demo.mp4)** (83 s, subtitled): what it does, how the AI summary handles prompt injection, and how to run it.
+
 A small applicant tracking system: add candidates, move them through a hiring pipeline, keep timestamped notes, and generate an AI summary of each resume.
 
 **Stack:** FastAPI + SQLModel (SQLite) backend, React + TypeScript (Vite) frontend, Anthropic Claude for the summary.
