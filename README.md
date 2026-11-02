@@ -1,10 +1,10 @@
 # Candidate Tracker
 
-https://github.com/user-attachments/assets/822cb3d2-6b34-46bd-af20-f5a8913156f3
+### A small applicant tracking system: add candidates, move them through a hiring pipeline, keep timestamped notes, and generate an AI summary of each resume.
+
+https://github.com/user-attachments/assets/e94d2279-035e-48fd-9db7-86b41cdf128f
 
 Video not playing? [Download the demo (MP4, 83 s)](https://github.com/TanvirS-07/candidate-tracker/raw/main/docs/demo.mp4).
-
-A small applicant tracking system: add candidates, move them through a hiring pipeline, keep timestamped notes, and generate an AI summary of each resume.
 
 **Stack:** FastAPI + SQLModel (SQLite) backend, React + TypeScript (Vite) frontend, Anthropic Claude for the summary.
 
